@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Suite">
+
+		<parameter name="Browser" value="chrome" />		// Chrome or Firefox or InternetExplorer
+		<parameter name="Environment" value="local" />		//local or Saucelabs
+		<parameter name="OS" value="Windows" />		// Windows or Mac or linux
+		<parameter name="TestEnvironment" value="QA" />		// QA or STG or Prod
+		
+	<test name="Test">
+		<classes>
+			<class name="com.frmk.testrunner.BaseTestRunner" />
+		</classes>
+	</test>
+</suite> 
