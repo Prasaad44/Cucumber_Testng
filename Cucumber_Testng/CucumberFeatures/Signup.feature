@@ -3,10 +3,8 @@ Feature: Registering to CRM Application
   Scenario: Launch the Application and Signup
     Given Navigates to CRM Application
     When I Click Signup Link and Choose Free Edition
-    Then I enter Mandatory details
-      | Prasaad | Chandrasekaran | prasaad44@ymail.com | Prasaad44 | febU@111 |
-    And I should navigate to Home Screen
+    Then I enter Personal details and Submit
+      | Prasaad | Chandrasekaran | prasaad44@gmail.com | Prasaad44 | P3ar$onPC |
+    And I should get Alert Popup
+    
 
-  Scenario: Checking Condition
-    Given Check the Condition
-  

@@ -8,20 +8,21 @@ public class Locators extends Logging {
 
 		By returnElement = null;
 		String[] splits = property.split("=");
+		String expression = "";
 
 		String locatorType = splits[0].toLowerCase();
-		String expression = "";
-		if(splits.length>2)
-		{			
+
+		if (splits.length > 2) {
 			for (int i = 1; i < splits.length; i++) {
-				if(i==1)
-				{
+				if (i == 1) {
 					expression = expression + splits[i];
 				}
-				if(i>=2) {
-				expression = expression +"="+ splits[i];
+				if (i >= 2) {
+					expression = expression + "=" + splits[i];
 				}
 			}
+		} else {
+			expression = splits[1];
 		}
 		switch (locatorType) {
 

@@ -5,12 +5,12 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.*;
 
-import com.cucumber.listener.ExtentProperties;
+
+import com.cucumber.listener.Reporter;
 import com.frmk.genericfunctions.DriverSetup;
 import com.frmk.genericfunctions.KillProcess;
 import com.frmk.utilities.Logging;
 import com.frmk.utilities.ReadProperties;
-
 
 import cucumber.api.CucumberOptions;
 import cucumber.api.testng.TestNGCucumberRunner;
@@ -26,13 +26,13 @@ public class BaseTestRunner {
 	public static String osName = "";
 	public static Logging logs = new Logging();
 
-	@BeforeSuite(alwaysRun = true)
+	@BeforeSuite(alwaysRun = true)	
 	@Parameters({ "Browser", "Environment", "TestEnvironment", "OS" })
 	public void initiateDriver(@Optional String Browser, @Optional String Environment, @Optional String TestEnvironment,
 			@Optional String OS) {
 
 		loadPropertiesFiles();
-		loadReportingFile();
+		
 
 		dvrstp = new DriverSetup();
 
@@ -49,10 +49,22 @@ public class BaseTestRunner {
 					dvrstp.initiateFirefoxDriver();
 				}
 			}
-			
-			
+
 		} else {
 			logs.logWarn("Please specify the Environment in Testng Xml");
+		}
+	}
+
+	@BeforeClass
+	public void launchApplication() {
+		String applicationURL = ReadProperties.configMap.get("URL");
+		if (!applicationURL.isEmpty()) {
+			driver.get(applicationURL);
+			//Reporter.addStepLog("Navigated to :" + applicationURL);
+
+		} else {
+			logs.logFatal("Application URL is Empty");
+			//Reporter.addStepLog("Application URL is Empty");
 		}
 	}
 
@@ -69,6 +81,7 @@ public class BaseTestRunner {
 		} else if (driver instanceof FirefoxDriver) {
 			KillProcess.killGeckoDriver();
 		}
+		loadReportingFile();
 		driver.quit();
 	}
 
@@ -76,11 +89,11 @@ public class BaseTestRunner {
 		ReadProperties.readPropertiesFile();
 	}
 
-	
 	public static void loadReportingFile() {
-		ExtentProperties exProp = ExtentProperties.INSTANCE;
-		exProp.setReportPath(userDirectory+"/Reports/cucumber-reports/AutomationReport.html");
+		Reporter.loadXMLConfig(BaseTestRunner.userDirectory + "/Reports/Extent-Config.xml");				
 	}
 
-
+	
+	
+	
 }

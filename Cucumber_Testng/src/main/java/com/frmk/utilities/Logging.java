@@ -2,8 +2,8 @@ package com.frmk.utilities;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-
 import com.cucumber.listener.Reporter;
+import com.frmk.testrunner.BaseTestRunner;
 
 public class Logging {
 
@@ -11,6 +11,9 @@ public class Logging {
 	public static Logger logger = Logger.getLogger("appFramLog");
 
 	static {
+		
+		System.setProperty("rootFile.log", BaseTestRunner.userDirectory+"/Reports/TraceLogs/AllAppLogs.log");
+		System.setProperty("appFile.log", BaseTestRunner.userDirectory+"/Reports/TraceLogs/Customised.log");
 		PropertyConfigurator.configure("./Log4j/log4j.properties");
 
 	}

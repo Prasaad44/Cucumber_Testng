@@ -1,35 +1,23 @@
 package com.frmk.testcases;
 
+import java.util.*;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-
 import com.cucumber.listener.Reporter;
 import com.frmk.pageobjects.SignUpPage;
 import com.frmk.testrunner.BaseTestRunner;
-import com.frmk.utilities.Logging;
-import com.frmk.utilities.ReadProperties;
-
 import cucumber.api.DataTable;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.*;
 
 public class SignUpCRMTest extends BaseTestRunner {
 
 	SignUpPage signPage = new SignUpPage();
-	
-	@Before
-	public void initializeReport() {
-		Reporter.loadXMLConfig(BaseTestRunner.userDirectory + "/Reports/Extent-Config.xml");
-
-	}
 
 	@Given("^Navigates to CRM Application$")
 	public void navigates_to_CRM_Application() {
-		driver.get(ReadProperties.configMap.get("URL"));
-		logs.logInfo("Application has been launched Successfully");
-		String title = driver.getTitle();
-		Assert.assertTrue(title.contains("Free CRM"), "Title not matches, validation failed");
+		if (signPage.checkLogo()) {
+			Reporter.addStepLog("CRM HomePage has been launched");
+		}
 
 	}
 
@@ -37,55 +25,45 @@ public class SignUpCRMTest extends BaseTestRunner {
 	public void i_Click_Signup_Link_and_Choose_Free_Edition() {
 		boolean signup = false;
 		boolean edition = false;
-		
 		SoftAssert ast = new SoftAssert();
-		
+
 		signup = signPage.clickSignup();
 		ast.assertTrue(signup, "Failed to Click on SignUp Link");
-		
+		Reporter.addStepLog("Signup Button has been clicked");
+
 		edition = signPage.selectEdition();
 		ast.assertTrue(edition, "Failed to Select Edition");
-		
+		Reporter.addStepLog("Free Edition has been Selected");
+
 		ast.assertAll();
 
 	}
 
-	@Then("^I enter Mandatory details$")
-	public void i_enter_Mandatory_details(DataTable arg1) {
+	@Then("^I enter Personal details and Submit$")
+	public void i_enter_Personal_details(DataTable details) {
+		boolean finalFlag = false;
+		SoftAssert ast = new SoftAssert();
 
-		// Write code here that turns the phrase above into concrete actions
-		// For automatic transformation, change DataTable to one of
-		// List<YourType>, List<List<E>>, List<Map<K,V>> or Map<K,V>.
-		// E,K,V must be a scalar (String, Integer, Date, enum etc)
-		Assert.assertTrue(true);
-		System.out.println("Hello, am in I enter Mandatory details");
+		List<List<String>> datas = details.raw();
+		if (signPage.enterDetails(datas))
+			Reporter.addStepLog("Mandatory Details has been entered");
+		else
+			Reporter.addStepLog("Failed to enter details");
 
+		finalFlag = signPage.submitForm();
+		ast.assertTrue(finalFlag, "Failed to Signup");
+		if (finalFlag)
+			Reporter.addStepLog("Signup Completed Successfully");
+
+		ast.assertAll();
 	}
 
-	@And("^I should navigate to Home Screen$")
-	public void i_should_navigate_to_Home_Screen() {
-
-		// Write code here that turns the phrase above into concrete actions
-
-		Assert.assertTrue(true);
-		logs.logInfo("Hello,I should navigate to Home Screen ");
-	}
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@Given("^Check the Condition$")
-	public void check_the_condition() {
-
-		Assert.assertTrue(true);
-		logs.logInfo("Hello dude cool in scenario 2");
-		System.out.println("Hello dude cool in scenario 2");
+	@And("^I should get Alert Popup$")
+	public void i_should_get_alert_popup() {
+		if (signPage.checkAlert()) {
+			signPage.doOnAlert("accept");
+			Reporter.addStepLog("Alert has been displayed");
+		}
 	}
 
 }
